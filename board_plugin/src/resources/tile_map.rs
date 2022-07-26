@@ -128,17 +128,17 @@ impl TileMap {
         format!("{}{}", buffer, line)
     }
 
-    // pub fn width(&self) -> u16 {
-    //     self.width
-    // }
+    pub fn width(&self) -> u16 {
+        self.width
+    }
 
-    // pub fn height(&self) -> u16 {
-    //     self.height
-    // }
+    pub fn height(&self) -> u16 {
+        self.height
+    }
 
-    // pub fn bomb_count(&self) -> u16 {
-    //     self.bomb_count
-    // }
+    pub fn bomb_count(&self) -> u16 {
+        self.bomb_count
+    }
 }
 
 impl Deref for TileMap {
