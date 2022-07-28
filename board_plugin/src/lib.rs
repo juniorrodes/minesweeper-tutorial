@@ -1,19 +1,23 @@
 pub mod components;
 pub mod resources;
+pub mod systems;
+mod bounds;
 
 #[cfg(feature = "debug")]
-use bevy_inspector_egui::{RegisterInspectable, InspectableRegistry};
+use bevy_inspector_egui::InspectableRegistry;
 
-use bevy::{log, prelude::*};
-use resources::{tile_map::TileMap, BoardOptions, tile::Tile};
+use bevy::{log, prelude::*, math::Vec3Swizzles};
+use resources::{tile_map::TileMap, BoardOptions, tile::Tile, TileSize, BoardPosition, Board};
+use components::{Coordinates, BombNeighbor, Bomb};
 
-use crate::{resources::{TileSize, BoardPosition}, components::{Coordinates, BombNeighbor, Bomb}};
+use crate::bounds::Bounds2;
 
 pub struct BoardPlugin;
 
 impl Plugin for BoardPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(Self::create_board);
+        app.add_startup_system(Self::create_board)
+            .add_system(systems::input::input_handling);
         log::info!("Loaded Board Plugin");
 
         #[cfg(feature = "debug")]
@@ -90,9 +94,17 @@ impl BoardPlugin {
                     .insert(Name::new("Background"));
                 Self::spawn_tiles(parent, &tile_map, tile_size, options.tile_padding, Color::GRAY, bomb_image, font)
             });
-
         #[cfg(feature = "debug")]
         log::info!("{}", tile_map.console_output());
+
+        commands.insert_resource(Board {
+            tile_map,
+            bounds: Bounds2 {
+                position: board_position.xy(),
+                size: board_size
+            },
+            tile_size,
+        });
     }
 
     fn bomb_count_text_bundle(count: u8, font: Handle<Font>, size: f32) -> Text2dBundle {
