@@ -16,15 +16,16 @@ fn main() {
     .add_plugins(DefaultPlugins)
     .add_plugin(BoardPlugin);
 
-    #[cfg(feature = "debug")]
-    app.add_plugin(WorldInspectorPlugin::new());
-
     app.insert_resource(BoardOptions {
         map_size: (20, 20),
         bomb_count: 40,
         tile_padding: 3.0,
         ..Default::default()
     });
+
+    #[cfg(feature = "debug")]
+    app.add_plugin(WorldInspectorPlugin::new());
+
     app.add_startup_system(camera_setup);
     app.run();
 }
