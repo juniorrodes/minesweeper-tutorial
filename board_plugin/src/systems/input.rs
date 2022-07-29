@@ -1,8 +1,14 @@
 use crate::Board;
+use crate::events::TileTriggerEvent;
 use bevy::input::{mouse::MouseButtonInput, ElementState};
 use bevy::{log, prelude::*};
 
-pub fn input_handling(windows: Res<Windows>, board: Res<Board>, mut button_evr: EventReader<MouseButtonInput>) {
+pub fn input_handling(
+    windows: Res<Windows>,
+    board: Res<Board>,
+    mut button_evr: EventReader<MouseButtonInput>,
+    mut tile_trigger_ewr: EventWriter<TileTriggerEvent>
+) {
     let window = windows.get_primary().unwrap();
 
     for event in button_evr.iter() {
@@ -17,11 +23,11 @@ pub fn input_handling(windows: Res<Windows>, board: Res<Board>, mut button_evr: 
                 if let Some(coordinates) = tile_coordinates {
                     match event.button {
                         MouseButton::Left => {
-                            log::info!("Trying to uncover tile on {}", coordinates);
-                            // TODO: Generate event
+                            // log::info!("Trying to uncover tile on {}", coordinates);
+                            tile_trigger_ewr.send(TileTriggerEvent(coordinates));
                         }
                         MouseButton::Right => {
-                            log::info!("Trying to mark tile on {}", coordinates);
+                            // log::info!("Trying to mark tile on {}", coordinates);
                             // TODO: Generate event
                         }
                         _ => (),
