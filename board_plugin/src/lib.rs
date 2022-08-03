@@ -32,7 +32,10 @@ impl <T: StateData>Plugin for BoardPlugin<T> {
             SystemSet::on_enter(self.running_state.clone())
                 .with_system(Self::create_board)
         )
-            // We handle input and trigger events only if the state is active
+        .add_system_set(
+            SystemSet::on_pause(self.running_state.clone())
+        )
+        // We handle input and trigger events only if the state is active
         .add_system_set(
             SystemSet::on_update(self.running_state.clone())
                 .with_system(systems::input::input_handling)

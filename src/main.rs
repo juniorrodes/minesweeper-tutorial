@@ -55,6 +55,17 @@ fn state_handler(mut state: ResMut<State<AppState>>, keys: Res<Input<KeyCode>>) 
         if state.current() == &AppState::Out {
             log::info!("loading game");
             state.set(AppState::InGame).unwrap();
+        } else if state.current() == &AppState::InGame {
+            log::info!("loading game");
+            state.restart().unwrap();
+        }
+    }
+    if keys.just_pressed(KeyCode::Escape) {
+        log::debug!("{:?}", state.inactives());
+        if state.current() == &AppState::InGame {
+            state.overwrite_push(AppState::Out).unwrap();
+        } else if !state.inactives().is_empty() {
+            state.pop().unwrap();
         }
     }
 }
